@@ -1,5 +1,6 @@
 class ApplicationController < Sinatra::Base
   set default_content_type: "application/json"
+  use Rack::JSONBodyParser
   
   get '/bakeries' do
     bakeries = Bakery.all
@@ -21,6 +22,23 @@ class ApplicationController < Sinatra::Base
     # see the BakedGood class for the  method definition of `.by_price`
     baked_good = BakedGood.by_price.first
     baked_good.to_json
+  end
+
+  post '/baked_goods' do
+    good = BakedGood.create(name: params[:name], price: params[:price], bakery_id: 1)
+    good.to_json
+  end
+
+  patch '/bakeries/:id' do
+    bakerie = Bakery.find(params[:id])
+    bakerie.update(name: params[:name])
+    bakerie.to_json
+  end
+
+  delete '/baked_goods/:id' do
+    bakerie = BakedGood.find(params[:id])
+    bakerie.destroy
+    bakerie.to_json
   end
 
 end
